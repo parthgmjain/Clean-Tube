@@ -6,12 +6,29 @@
   <link rel="stylesheet" href="popup.css" />
 </head>
 <body>
-  <h2>Disallowed Keywords</h2>
-  <div class="input-row">
-    <input type="text" id="disallowedInput" placeholder="Add disallowed keywords..." />
-    <button id="addDisallowed">Add</button>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="tab1">Keywords</div>
+    <div class="tab" data-tab="tab2">Hidden Sections</div>
+    <div class="tab" data-tab="tab3">Color</div>
   </div>
-  <ul id="disallowedList"></ul>
+
+  <div id="tab1" class="tab-content active">
+    <h2>Disallowed Keywords</h2>
+    <div class="input-row">
+      <input type="text" id="disallowedInput" placeholder="Add disallowed keywords..." />
+      <button id="addDisallowed">Add</button>
+    </div>
+    <ul id="disallowedList"></ul>
+  </div>
+
+  <div id="tab2" class="tab-content">
+    <h2>tab2</h2>
+  </div>
+
+  <div id="tab3" class="tab-content">
+    <h2>tab3</h2>
+  </div>
 
   <script src="popup.js"></script>
 </body>
