@@ -1,4 +1,94 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    const sections = [
+      'headerBg',
+      'sidebarBg',
+      'videoTitle',
+      'channelName',
+      'commentsBg',
+      'commentsText',
+      'pageBg'
+    ];
+  
+    // Load saved values when popup opens
+    chrome.storage.sync.get(sections, (data) => {
+      sections.forEach(section => {
+        updateUI(section, data[section] || { R: 255, G: 255, B: 255 });
+      });
+    });
+  
+    // Add listeners for sliders & inputs
+    sections.forEach(section => {
+      ['R', 'G', 'B'].forEach(channel => {
+        const slider = document.querySelector(`input[name=${section + channel}]`);
+        const input = document.querySelector(`input[name=${section + channel}Input]`);
+  
+        slider.addEventListener('input', () => {
+          input.value = slider.value;
+          updateColor(section);
+        });
+  
+        input.addEventListener('input', () => {
+          let val = parseInt(input.value);
+          if (isNaN(val) || val < 0) val = 0;
+          if (val > 255) val = 255;
+          slider.value = val;
+          input.value = val;
+          updateColor(section);
+        });
+      });
+    });
+  
+    // Reset button
+    document.getElementById('resetColors').addEventListener('click', () => {
+      sections.forEach(section => {
+        const defaults = { R: 255, G: 255, B: 255 };
+        updateUI(section, defaults);
+        saveColor(section, defaults);
+        sendColor(section, defaults);
+      });
+    });
+  
+  // --- Functions ---
+  
+  function updateUI(section, color) {
+    ['R', 'G', 'B'].forEach(channel => {
+      document.querySelector(`input[name=${section + channel}]`).value = color[channel];
+      document.querySelector(`input[name=${section + channel}Input]`).value = color[channel];
+    });
+    updatePreview(section, color);
+  }
+  
+  function updateColor(section) {
+    const color = {
+      R: parseInt(document.querySelector(`input[name=${section + 'R'}]`).value),
+      G: parseInt(document.querySelector(`input[name=${section + 'G'}]`).value),
+      B: parseInt(document.querySelector(`input[name=${section + 'B'}]`).value)
+    };
+    updatePreview(section, color);
+    saveColor(section, color);
+    sendColor(section, color);
+  }
+  
+  function updatePreview(section, color) {
+    const preview = document.getElementById(section + 'Preview');
+    preview.style.backgroundColor = `rgb(${color.R}, ${color.G}, ${color.B})`;
+  }
+  
+  function saveColor(section, color) {
+    chrome.storage.sync.set({ [section]: color });
+  }
+  
+  function sendColor(section, color) {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        action: 'applyColor',
+        section: section,
+        color: color
+      });
+    });
+  }
+  
   const disallowedInput = document.getElementById("disallowedInput");
   const addDisallowed = document.getElementById("addDisallowed");
   const disallowedListEl = document.getElementById("disallowedList");
