@@ -51,8 +51,89 @@
   </div>
 
   <div id="tab3" class="tab-content">
-    <h2>Color</h2>
-    <!-- Placeholder for future settings -->
+    <h2>Customize YouTube Colors</h2>
+    <form id="colorSettingsForm">
+
+      <div class="color-picker">
+        <label>Header Background</label>
+        <input type="range" min="0" max="255" name="headerBgR" class="slider" /> R
+        <input type="number" min="0" max="255" name="headerBgRInput" class="numInput" />
+        <input type="range" min="0" max="255" name="headerBgG" class="slider" /> G
+        <input type="number" min="0" max="255" name="headerBgGInput" class="numInput" />
+        <input type="range" min="0" max="255" name="headerBgB" class="slider" /> B
+        <input type="number" min="0" max="255" name="headerBgBInput" class="numInput" />
+        <div class="color-preview" id="headerBgPreview"></div>
+      </div>
+
+      <div class="color-picker">
+        <label>Sidebar Background</label>
+        <input type="range" min="0" max="255" name="sidebarBgR" class="slider" /> R
+        <input type="number" min="0" max="255" name="sidebarBgRInput" class="numInput" />
+        <input type="range" min="0" max="255" name="sidebarBgG" class="slider" /> G
+        <input type="number" min="0" max="255" name="sidebarBgGInput" class="numInput" />
+        <input type="range" min="0" max="255" name="sidebarBgB" class="slider" /> B
+        <input type="number" min="0" max="255" name="sidebarBgBInput" class="numInput" />
+        <div class="color-preview" id="sidebarBgPreview"></div>
+      </div>
+
+      <div class="color-picker">
+        <label>Video Titles</label>
+        <input type="range" min="0" max="255" name="videoTitleR" class="slider" /> R
+        <input type="number" min="0" max="255" name="videoTitleRInput" class="numInput" />
+        <input type="range" min="0" max="255" name="videoTitleG" class="slider" /> G
+        <input type="number" min="0" max="255" name="videoTitleGInput" class="numInput" />
+        <input type="range" min="0" max="255" name="videoTitleB" class="slider" /> B
+        <input type="number" min="0" max="255" name="videoTitleBInput" class="numInput" />
+        <div class="color-preview" id="videoTitlePreview"></div>
+      </div>
+
+      <div class="color-picker">
+        <label>Channel Names</label>
+        <input type="range" min="0" max="255" name="channelNameR" class="slider" /> R
+        <input type="number" min="0" max="255" name="channelNameRInput" class="numInput" />
+        <input type="range" min="0" max="255" name="channelNameG" class="slider" /> G
+        <input type="number" min="0" max="255" name="channelNameGInput" class="numInput" />
+        <input type="range" min="0" max="255" name="channelNameB" class="slider" /> B
+        <input type="number" min="0" max="255" name="channelNameBInput" class="numInput" />
+        <div class="color-preview" id="channelNamePreview"></div>
+      </div>
+
+      <div class="color-picker">
+        <label>Comments Background</label>
+        <input type="range" min="0" max="255" name="commentsBgR" class="slider" /> R
+        <input type="number" min="0" max="255" name="commentsBgRInput" class="numInput" />
+        <input type="range" min="0" max="255" name="commentsBgG" class="slider" /> G
+        <input type="number" min="0" max="255" name="commentsBgGInput" class="numInput" />
+        <input type="range" min="0" max="255" name="commentsBgB" class="slider" /> B
+        <input type="number" min="0" max="255" name="commentsBgBInput" class="numInput" />
+        <div class="color-preview" id="commentsBgPreview"></div>
+      </div>
+
+      <div class="color-picker">
+        <label>Comments Text</label>
+        <input type="range" min="0" max="255" name="commentsTextR" class="slider" /> R
+        <input type="number" min="0" max="255" name="commentsTextRInput" class="numInput" />
+        <input type="range" min="0" max="255" name="commentsTextG" class="slider" /> G
+        <input type="number" min="0" max="255" name="commentsTextGInput" class="numInput" />
+        <input type="range" min="0" max="255" name="commentsTextB" class="slider" /> B
+        <input type="number" min="0" max="255" name="commentsTextBInput" class="numInput" />
+        <div class="color-preview" id="commentsTextPreview"></div>
+      </div>
+
+      <div class="color-picker">
+        <label>Page Background</label>
+        <input type="range" min="0" max="255" name="pageBgR" class="slider" /> R
+        <input type="number" min="0" max="255" name="pageBgRInput" class="numInput" />
+        <input type="range" min="0" max="255" name="pageBgG" class="slider" /> G
+        <input type="number" min="0" max="255" name="pageBgGInput" class="numInput" />
+        <input type="range" min="0" max="255" name="pageBgB" class="slider" /> B
+        <input type="number" min="0" max="255" name="pageBgBInput" class="numInput" />
+        <div class="color-preview" id="pageBgPreview"></div>
+      </div>
+
+      <button type="button" id="resetColors">Reset to Default</button>
+    </form>
+
   </div>
 
   <script src="popup.js"></script>
