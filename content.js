@@ -87,17 +87,43 @@ function applyColorSettings() {
           el.style.setProperty('color', `rgb(${rgbValue})`, 'important'));
         break;
 
-      case 'channelName':
-        document.querySelectorAll('#channel-name').forEach(el => 
-          el.style.setProperty('color', `rgb(${rgbValue})`, 'important'));
-        break;
+        case 'ChipsBar':
+          applyPersistentStyle('chipsBar', `
+            /* Style the entire chips container */
+            ytd-feed-filter-chip-bar-renderer,
+            #chips-wrapper.style-scope.ytd-feed-filter-chip-bar-renderer {
+              background-color: rgba(${rgbValue}, 0.1) !important;
+              padding: 4px !important;
+            }
+
+=            yt-chip-cloud-chip-renderer,
+            #chip.yt-chip-cloud-chip-renderer {
+              color: rgb(${rgbValue}) !important;
+              // background-color: rgba(${rgbValue}, 0.1) !important;
+              padding: 0 12px !important;
+              height: 32px !important;
+              margin: 0 4px !important;
+            }
+
+            /* Hover state */
+            yt-chip-cloud-chip-renderer:hover {
+              background-color: rgba(${rgbValue}, 0.2) !important;
+            }
+
+            /* Selected chip */
+            yt-chip-cloud-chip-renderer[selected] {
+              background-color: rgba(${rgbValue}, 0.3) !important;
+              font-weight: 500 !important;
+            }
+          `);
+          break;
 
       case 'commentsBg':
         document.querySelector('#comments')?.style.setProperty(
           'background-color', `rgb(${rgbValue})`, 'important');
         break;
 
-        case 'commentsText':
+        case 'Text':
           applyPersistentStyle('allText', `
             *:not(input):not(textarea):not(button):not(a):not(.ytp-progress-bar) {
               color: rgb(${rgbValue}) !important;

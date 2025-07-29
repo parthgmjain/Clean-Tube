@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
       'headerBg',
       'sidebarBg',
       'videoTitle',
-      'channelName',
+      'ChipsBar',
       'commentsBg',
-      'commentsText',
+      'Text',
       'pageBg'
     ];
   
