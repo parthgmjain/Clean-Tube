@@ -41,8 +41,17 @@ document.addEventListener('DOMContentLoaded', () => {
   
     // Reset button
     document.getElementById('resetColors').addEventListener('click', () => {
+      // Default white for most elements
+      const defaultWhite = { R: 255, G: 255, B: 255 };
+      
+      const textElements = {
+        'videoTitle': { R: 0, G: 0, B: 0 },  // Black video titles
+        'Text': { R: 0, G: 0, B: 0 }         // Black general text
+      };
+    
       sections.forEach(section => {
-        const defaults = { R: 255, G: 255, B: 255 };
+        // Use black for text elements, white for everything else
+        const defaults = textElements[section] || defaultWhite;
         updateUI(section, defaults);
         saveColor(section, defaults);
         sendColor(section, defaults);
@@ -176,6 +185,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Initial render
   renderAll();
 });
