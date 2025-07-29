@@ -3,34 +3,21 @@ let hideSettings = {};
 let colorSettings = {};
 let styleElements = {};
 
-// ---- Load settings ----
 function loadSettings() {
-  chrome.storage.sync.get(['disallowedTopics', 'hideSettings'], (data) => {
+  chrome.storage.sync.get(['disallowedTopics', 'hideSettings', 'colorSettings'], (data) => {
     disallowedTopics = data.disallowedTopics || [];
     hideSettings = data.hideSettings || {};
+    colorSettings = data.colorSettings || {};
     applyAllFilters();
-  });
-}
-
-function loadColorSettings() {
-  chrome.storage.sync.get(null, (data) => {
-    colorSettings = {};
-    for (const key in data) {
-      if (typeof data[key] === 'object' && 'R' in data[key]) {
-        colorSettings[key] = data[key];
-      }
-    }
     applyColorSettings();
   });
 }
 
-// ---- Apply all ----
 function applyAllFilters() {
   filterVideos();
   hideSections();
 }
 
-// ---- Persistent Style Application ----
 function applyPersistentStyle(id, css) {
   if (!styleElements[id]) {
     styleElements[id] = document.createElement('style');
@@ -56,90 +43,55 @@ function applyColorSettings() {
 
       case 'sidebarBg':
         applyPersistentStyle('sidebar', `
-          #guide, #guide-content, ytd-guide-renderer,
-          #guide-inner-content, #sections, #items {
+          #guide, #guide-content, ytd-guide-renderer {
             background-color: rgb(${rgbValue}) !important;
           }
-          ytd-guide-entry-renderer {
-            background-color: transparent !important;
+        `);
+        break;
+
+      case 'videoTitle':
+        applyPersistentStyle('videoTitle', `
+          #video-title {
+            color: rgb(${rgbValue}) !important;
           }
-          #title, #label {
-            color: white !important;
+        `);
+        break;
+
+      case 'ChipsBar':
+        applyPersistentStyle('chipsBar', `
+          #chips-wrapper.style-scope.ytd-feed-filter-chip-bar-renderer {
+            background-color: rgb(${rgbValue}) !important;
+          }
+        `);
+        break;
+
+      case 'commentsBg':
+        applyPersistentStyle('comments', `
+          #comments {
+            background-color: rgb(${rgbValue}) !important;
+          }
+        `);
+        break;
+
+      case 'Text':
+        applyPersistentStyle('text', `
+          body, body *:not(input):not(textarea):not(button) {
+            color: rgb(${rgbValue}) !important;
           }
         `);
         break;
 
       case 'pageBg':
         applyPersistentStyle('page', `
-          body, ytd-app, #content, #page-manager, #primary, #contents,
-          ytd-rich-grid-renderer, ytd-two-column-browse-results-renderer,
-          #secondary, #player-container {
+          body, ytd-app, #content, #page-manager {
             background-color: rgb(${rgbValue}) !important;
-          }
-          ytd-rich-item-renderer {
-            background-color: transparent !important;
           }
         `);
         break;
-
-      case 'videoTitle':
-        document.querySelectorAll('#video-title').forEach(el => 
-          el.style.setProperty('color', `rgb(${rgbValue})`, 'important'));
-        break;
-
-        case 'ChipsBar':
-          applyPersistentStyle('chipsBar', `
-            /* Style the entire chips container */
-            ytd-feed-filter-chip-bar-renderer,
-            #chips-wrapper.style-scope.ytd-feed-filter-chip-bar-renderer {
-              background-color: rgba(${rgbValue}, 0.1) !important;
-              padding: 4px !important;
-            }
-
-=            yt-chip-cloud-chip-renderer,
-            #chip.yt-chip-cloud-chip-renderer {
-              color: rgb(${rgbValue}) !important;
-              // background-color: rgba(${rgbValue}, 0.1) !important;
-              padding: 0 12px !important;
-              height: 32px !important;
-              margin: 0 4px !important;
-            }
-
-            /* Hover state */
-            yt-chip-cloud-chip-renderer:hover {
-              background-color: rgba(${rgbValue}, 0.2) !important;
-            }
-
-            /* Selected chip */
-            yt-chip-cloud-chip-renderer[selected] {
-              background-color: rgba(${rgbValue}, 0.3) !important;
-              font-weight: 500 !important;
-            }
-          `);
-          break;
-
-      case 'commentsBg':
-        document.querySelector('#comments')?.style.setProperty(
-          'background-color', `rgb(${rgbValue})`, 'important');
-        break;
-
-        case 'Text':
-          applyPersistentStyle('allText', `
-            *:not(input):not(textarea):not(button):not(a):not(.ytp-progress-bar) {
-              color: rgb(${rgbValue}) !important;
-            }
-            a, a * {
-              color: rgb(${Math.min(255, color.R + 40)}, 
-                      ${Math.min(255, color.G + 40)}, 
-                      ${Math.min(255, color.B + 40)}) !important;
-            }
-          `);
-          break;
     }
   }
 }
 
-// ---- Filters ----
 function filterVideos() {
   const videos = document.querySelectorAll("ytd-rich-item-renderer, ytd-compact-video-renderer");
   videos.forEach(video => {
@@ -155,28 +107,90 @@ function filterVideos() {
 }
 
 function hideSections() {
-  // ... (keep your existing hideSections implementation exactly the same)
+  if (hideSettings.hideHomeFeed) {
+    document.querySelector('ytd-browse[page-subtype="home"] #contents')?.style.setProperty('display', 'none', 'important');
+  }
+  if (hideSettings.hideVideoSidebar) {
+    document.querySelector('#secondary')?.style.setProperty('display', 'none', 'important');
+  }
+  if (hideSettings.hideRecommended) {
+    document.querySelectorAll('ytd-recommendation-section').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
+    });
+  }
+  if (hideSettings.hideLiveChat) {
+    document.querySelector('ytd-live-chat-frame')?.style.setProperty('display', 'none', 'important');
+  }
+  if (hideSettings.hidePlaylist) {
+    document.querySelector('ytd-playlist-panel-renderer')?.style.setProperty('display', 'none', 'important');
+  }
+  if (hideSettings.hideFundraiser) {
+    document.querySelector('ytd-fundraiser-renderer')?.style.setProperty('display', 'none', 'important');
+  }
+  if (hideSettings.hideEndScreenFeed) {
+    document.querySelector('ytd-watch-next-secondary-results-renderer')?.style.setProperty('display', 'none', 'important');
+  }
+  if (hideSettings.hideEndScreenCards) {
+    document.querySelectorAll('.ytp-ce-element').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
+    });
+  }
+  if (hideSettings.hideShorts) {
+    document.querySelectorAll('[is-shorts]').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
+    });
+    document.querySelectorAll('[title="Shorts"]').forEach(el => {
+      el.closest('ytd-rich-section-renderer, ytd-reel-shelf-renderer')?.style.setProperty('display', 'none', 'important');
+    });
+  }
+  if (hideSettings.hideComments) {
+    document.querySelector('ytd-comments')?.style.setProperty('display', 'none', 'important');
+  }
+  if (hideSettings.hideMixes) {
+    document.querySelectorAll('ytd-radio-renderer').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
+    });
+  }
+  if (hideSettings.hideMerch) {
+    document.querySelectorAll('ytd-merch-shelf-renderer').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
+    });
+  }
+  if (hideSettings.hideVideoInfo) {
+    document.querySelector('#info')?.style.setProperty('display', 'none', 'important');
+  }
+  if (hideSettings.hideTopHeader) {
+    document.querySelector('#masthead-container')?.style.setProperty('display', 'none', 'important');
+  }
+  if (hideSettings.hideNotifications) {
+    document.querySelector('ytd-notification-topbar-button-renderer')?.style.setProperty('display', 'none', 'important');
+  }
+  if (hideSettings.hideInaptSearchResults) {
+    document.querySelectorAll('ytd-search-pyv-renderer').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
+    });
+  }
+  if (hideSettings.hideExploreTrending) {
+    document.querySelectorAll('ytd-guide-entry-renderer a[title="Explore"], ytd-guide-entry-renderer a[title="Trending"]').forEach(el => {
+      el.closest('ytd-guide-entry-renderer')?.style.setProperty('display', 'none', 'important');
+    });
+  }
+  if (hideSettings.hideMoreFromYouTube) {
+    document.querySelectorAll('ytd-horizontal-card-list-renderer').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
+    });
+  }
+  if (hideSettings.hideSubscriptions) {
+    document.querySelector('ytd-browse[page-subtype="subscriptions"] #contents')?.style.setProperty('display', 'none', 'important');
+  }
+  if (hideSettings.disableAutoplay) {
+    const checkbox = document.querySelector('#toggle');
+    if (checkbox && checkbox.checked) {
+      checkbox.click();
+    }
+  }
 }
 
-// ---- Mutation Observer ----
-const observer = new MutationObserver((mutations) => {
-  const needsUpdate = mutations.some(mutation => 
-    mutation.addedNodes.length > 0 || 
-    mutation.attributeName === 'class'
-  );
-  if (needsUpdate) debouncedApplyChanges();
-});
-
-let applyTimeout;
-function debouncedApplyChanges() {
-  clearTimeout(applyTimeout);
-  applyTimeout = setTimeout(() => {
-    applyAllFilters();
-    applyColorSettings();
-  }, 300);
-}
-
-// ---- Message Handling ----
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'applyColor') {
     colorSettings[message.section] = message.color;
@@ -184,25 +198,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// ---- Storage Change Listener ----
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'sync') {
     if (changes.disallowedTopics) disallowedTopics = changes.disallowedTopics.newValue || [];
     if (changes.hideSettings) hideSettings = changes.hideSettings.newValue || {};
-    Object.keys(changes).forEach(key => {
-      if (typeof changes[key].newValue === 'object' && 'R' in changes[key].newValue) {
-        colorSettings[key] = changes[key].newValue;
-      }
-    });
+    if (changes.colorSettings) colorSettings = changes.colorSettings.newValue || {};
     applyAllFilters();
-    applyColorSettings();
   }
 });
 
-// ---- Initialization ----
+const observer = new MutationObserver(() => {
+  applyAllFilters();
+  applyColorSettings();
+});
+
 function initialize() {
   loadSettings();
-  loadColorSettings();
   observer.observe(document, {
     childList: true,
     subtree: true,
@@ -210,11 +221,10 @@ function initialize() {
     attributeFilter: ['class', 'style']
   });
   
-  // Backup periodic application
-  setInterval(applyColorSettings, 5000);
-  
-  // YouTube navigation event listener
-  window.addEventListener('yt-navigate-start', debouncedApplyChanges);
+  setInterval(() => {
+    applyAllFilters();
+    applyColorSettings();
+  }, 5000);
 }
 
 initialize();
