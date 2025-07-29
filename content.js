@@ -41,29 +41,31 @@ function applyColorSettings() {
       case 'headerBg':
         document.querySelector('#masthead-container')?.style.setProperty('background-color', rgb, 'important');
         break;
-
+    
       case 'sidebarBg':
-        document.querySelector('#app')?.style.setProperty('background-color', rgb, 'important');
+        document.querySelector('#guide-content')?.style.setProperty('background-color', rgb, 'important');
         break;
-
+    
       case 'videoTitle':
         document.querySelectorAll('#video-title').forEach(el => el.style.setProperty('color', rgb, 'important'));
         break;
-
+    
       case 'channelName':
         document.querySelectorAll('#channel-name').forEach(el => el.style.setProperty('color', rgb, 'important'));
         break;
-
+    
       case 'commentsBg':
         document.querySelector('#comments')?.style.setProperty('background-color', rgb, 'important');
         break;
-
+    
       case 'commentsText':
         document.querySelectorAll('#comments #content-text').forEach(el => el.style.setProperty('color', rgb, 'important'));
         break;
-
+    
       case 'pageBg':
+        // Change both body background and the contents div background
         document.body.style.setProperty('background-color', rgb, 'important');
+        document.querySelector('#contents.style-scope.ytd-rich-grid-renderer')?.style.setProperty('background-color', rgb, 'important');
         break;
     }
   }
